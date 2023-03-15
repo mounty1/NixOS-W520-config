@@ -1,11 +1,10 @@
 # { config, pkgs, ... }:
 
-# Add `"x-systemd.requires=openvpn-officeVPN.service"` to remote mount options list
 {
 	services = {
 		openvpn.servers = {
 			office = {
-				config = '' config /home/mounty/NGV/openvpn-michael-inline.ovpn '';
+				config = '' config /root/office-untangle.conf '';
 				autoStart = false;
 				updateResolvConf = true;
 			};

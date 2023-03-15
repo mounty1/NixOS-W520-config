@@ -4,17 +4,27 @@
 
 { config, pkgs, ... }:
 
+let
+	nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
+		export __NV_PRIME_RENDER_OFFLOAD=1
+		export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+		export __GLX_VENDOR_LIBRARY_NAME=nvidia
+		export __VK_LAYER_NV_optimus=NVIDIA_only
+	'';
+in
 {
-	imports = [ ./hardware-configuration.nix ./nvidia.nix ./openvpn.nix ];
+	imports = [
+		./hardware-configuration.nix
+		./nvidia.nix
+		./openvpn.nix
+	];
 
 	# Use the systemd-boot EFI boot loader.
 	boot.loader.systemd-boot.enable = true;
 	boot.loader.efi.canTouchEfiVariables = true;
-	boot.resumeDevice = "/dev/disk/by-label/NixOS";
+	boot.resumeDevice = "/dev/disk/by-label/SwappyMacSwapFa";
 	# Needed for myStream distribution directory creation.
 	boot.kernel.sysctl."fs.protected_hardlinks" = false;
-
-	swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 
 	networking.networkmanager = {
 		enable = true;
@@ -27,7 +37,6 @@
 
 	# The global useDHCP flag is deprecated, therefore explicitly set to false here.
 	# Per-interface useDHCP will be mandatory in the future.
-	networking.useDHCP = false;
 	networking.interfaces = {
 		enp0s25.useDHCP = true;
 		wlp3s0.useDHCP = true;
@@ -48,15 +57,16 @@
 	#	keyMap = "us";
 	# };
 
-	
 	fileSystems."/mnt/az-storage" =
 		{ device = "//ngv.file.core.windows.net/office";
 			fsType = "cifs";
-			options = ["nofail" "vers=3.0" "credentials=/root/az-storage.cred" "dir_mode=0777" "file_mode=0777" "serverino"];
+			options = ["nofail" "noauto" "vers=3.0" "credentials=/home/mounty/NGV/az-storage.cred" "dir_mode=0777" "file_mode=0777" "serverino"];
 		};
 
 	fileSystems."/home/mounty/vault" =
-		{ device = "/dev/disk/by-uuid/33a50d58-8a98-4c96-aa37-9b0ddbb2e796"; };
+		{ device = "/dev/disk/by-uuid/33a50d58-8a98-4c96-aa37-9b0ddbb2e796";
+			options = [ "noauto" ];
+		};
 
 	fileSystems."/mnt/mymedia" =
 		{ device = "172.16.47.8:/Media";
@@ -68,7 +78,7 @@
 		enable = true;
 		# layout = "us";
 		# xkbOptions = "eurosign:e";
-		libinput.enable = true;
+		libinput.enable = true;	# enables touchpad input
 		displayManager.lightdm = {
 			enable = true;
 			# autoLogin.minimumUid = 500;
@@ -84,9 +94,8 @@
 
 	# Enable sound.
 	sound.enable = true;
+	hardware.opengl.enable = true;
 	hardware.pulseaudio.enable = true;
-
-	# Enable touchpad support (enabled default in most desktopManager).
 
 	users.users.mounty = {
 		isNormalUser = true;
@@ -117,7 +126,7 @@
 	# $ nix search wget
 	environment.systemPackages = with pkgs; [
 		# hardware and firmware
-		pciutils usbutils
+		pciutils usbutils nvidia-offload
 		glmark2
 		efibootmgr
 		# Desktop
@@ -140,7 +149,7 @@
 		tcpdump
 		jq
 		# Programming CLI
-		gcc11 rustc cargo nodejs jdk openjdk kotlin php74
+		gcc11 rustc cargo nodejs jdk openjdk kotlin php
 		git vim gh mercurial vim_configurable
 		# python python3Full
 		(python310.withPackages(ps: with ps; [
@@ -165,6 +174,7 @@
 		gimp
 		ffmpeg
 		wine
+                anki-bin
 		# mystream
 		youtube-dl yt-dlp
 		# Network CLI
@@ -237,5 +247,5 @@
 	# this value at the release version of the first install of this system.
 	# Before changing this value read the documentation for this option
 	# (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-	system.stateVersion = "21.11"; # Did you read the comment?
+	system.stateVersion = "22.11"; # Did you read the comment?
 }
