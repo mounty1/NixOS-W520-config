@@ -17,6 +17,7 @@ in
 	imports = [
 		./hardware-configuration.nix
 		./nvidia.nix
+		./personal.nix
 		./openvpn.nix
 	];
 
@@ -194,12 +195,17 @@ in
 		package = pkgs.postgresql_14;
 		dataDir = "/home/mounty/NGV/.PG14";
 		enableTCPIP = true;
+		# Ooh passwords in a repo.;  I'm telling your dad.
 		initialScript = pkgs.writeText "backend-initScript" ''
 			CREATE ROLE mediaman WITH LOGIN PASSWORD 'zem56$W7' CREATEDB;
 			CREATE DATABASE mystream;
 			GRANT ALL PRIVILEGES ON DATABASE mystream TO mediaman;
 			'';
 	};
+
+	services.logind.extraConfig = ''
+		HandlePowerKey = poweroff;
+	'';
 
 	services.teamviewer.enable = true;
 
