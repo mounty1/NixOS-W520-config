@@ -32,7 +32,7 @@ in
 		enable = true;
 		plugins = [ pkgs.networkmanager-openvpn ];
 	};
-	networking.hostName = "ida"; # Define your hostname.
+	networking.hostName = "pingala"; # Define your hostname.
 
 	# Set your time zone.
 	time.timeZone = "Australia/Brisbane";
@@ -67,7 +67,7 @@ in
 
 	fileSystems."/home/mounty/vault" =
 		{ device = "/dev/disk/by-uuid/33a50d58-8a98-4c96-aa37-9b0ddbb2e796";
-			options = [ "noauto" ];
+			# options = [ "noauto" ];
 		};
 
 	fileSystems."/mnt/mymedia" =
