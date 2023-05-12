@@ -94,10 +94,10 @@ in
 	# Enable CUPS to print documents.
 	services.printing.enable = true;
 
-	# Enable sound.
 	sound.enable = true;
 	hardware.opengl.enable = true;
 	hardware.pulseaudio.enable = true;
+	nixpkgs.config.allowUnfree = true;
 
 	users.users.mounty = {
 		isNormalUser = true;
