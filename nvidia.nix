@@ -3,12 +3,7 @@
 {
 	services.xserver.videoDrivers = [ "nvidia" ];
 
-
-	# For nvidia
-	nixpkgs.config.allowUnfree = true;
-
 	hardware.nvidia = {
-		# powerManagement.enable = true;
 		package = config.boot.kernelPackages.nvidiaPackages.legacy_390;
 		modesetting.enable = true;
 		prime = {
