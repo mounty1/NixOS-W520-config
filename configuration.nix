@@ -5,12 +5,16 @@
 { config, pkgs, ... }:
 
 {
-	imports = [ ./hardware-configuration.nix ./nvidia.nix ./openvpn.nix ];
+	imports = [
+		./hardware-configuration.nix
+		./personal.nix
+		./openvpn.nix
+	];
 
 	# Use the systemd-boot EFI boot loader.
 	boot.loader.systemd-boot.enable = true;
 	boot.loader.efi.canTouchEfiVariables = true;
-	boot.resumeDevice = "/dev/disk/by-label/NixOS";
+	boot.resumeDevice = "/dev/disk/by-label/swap";
 	# Needed for myStream distribution directory creation.
 	boot.kernel.sysctl."fs.protected_hardlinks" = false;
 
@@ -56,7 +60,9 @@
 		};
 
 	fileSystems."/home/mounty/vault" =
-		{ device = "/dev/disk/by-uuid/33a50d58-8a98-4c96-aa37-9b0ddbb2e796"; };
+		{ device = "/dev/disk/by-label/Vault";
+			options = [ "noauto" "user" "rw" ];
+		};
 
 	fileSystems."/mnt/mymedia" =
 		{ device = "172.16.47.8:/Media";
@@ -66,6 +72,7 @@
 
 	services.xserver = {
 		enable = true;
+		videoDrivers = ["intel" "i915" "nouveau"];
 		# layout = "us";
 		# xkbOptions = "eurosign:e";
 		libinput.enable = true;
@@ -85,11 +92,9 @@
 	# Enable sound.
 	sound.enable = true;
 	hardware.pulseaudio.enable = true;
-
-	# Enable touchpad support (enabled default in most desktopManager).
+	nixpkgs.config.allowUnfree = true;
 
 	users.users.mounty = {
-		isNormalUser = true;
 		name = "mounty";
 		description = "Michael Mounteney";
 		group = "users";
@@ -213,7 +218,9 @@
 	# Enable the OpenSSH daemon.
 	services.openssh = {
 		enable = true;
-		passwordAuthentication = false;
+		settings = {
+			PasswordAuthentication = false;
+		};
 		ports = [ 3887 ];
 	};
 
@@ -237,5 +244,5 @@
 	# this value at the release version of the first install of this system.
 	# Before changing this value read the documentation for this option
 	# (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-	system.stateVersion = "21.11"; # Did you read the comment?
+	system.stateVersion = "23.11";
 }
