@@ -7,7 +7,7 @@
 {
 	imports = [
 		./hardware-configuration.nix
-		./personal.nix
+		./nvidia.nix
 		./openvpn.nix
 	];
 
@@ -72,7 +72,6 @@
 
 	services.xserver = {
 		enable = true;
-		videoDrivers = ["intel" "i915" "nouveau"];
 		# layout = "us";
 		# xkbOptions = "eurosign:e";
 		libinput.enable = true;
@@ -97,6 +96,8 @@
 	users.users.mounty = {
 		name = "mounty";
 		description = "Michael Mounteney";
+		home = "/home/mounty";
+		shell = pkgs.bash;
 		group = "users";
 		uid = 573;
 		createHome = false;
@@ -145,7 +146,7 @@
 		tcpdump
 		jq
 		# Programming CLI
-		gcc11 rustc cargo nodejs jdk openjdk kotlin php74
+		gcc11 rustc cargo nodejs jdk openjdk kotlin php82
 		git vim gh mercurial vim_configurable
 		# python python3Full
 		(python310.withPackages(ps: with ps; [

@@ -1,11 +1,14 @@
 { config, pkgs, ... }:
 
 {
+	boot.kernelPackages = pkgs.linuxPackages_5_15;
+
 	services.xserver.videoDrivers = [ "nvidia" ];
 
 	# For nvidia
 	# not for 21.05
 	nixpkgs.config.allowUnfree = true;
+	nixpkgs.config.nvidia.acceptLicense = true;
 
 	hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_390;
 
