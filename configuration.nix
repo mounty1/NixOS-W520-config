@@ -56,7 +56,7 @@
 	fileSystems."/mnt/az-storage" =
 		{ device = "//ngv.file.core.windows.net/office";
 			fsType = "cifs";
-			options = ["nofail" "vers=3.0" "credentials=/root/az-storage.cred" "dir_mode=0777" "file_mode=0777" "serverino"];
+			options = ["nofail" "noauto" "vers=3.0" "credentials=/root/az-storage.cred" "dir_mode=0777" "file_mode=0777" "serverino"];
 		};
 
 	fileSystems."/home/mounty/vault" =

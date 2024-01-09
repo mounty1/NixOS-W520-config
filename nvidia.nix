@@ -1,18 +1,17 @@
 { config, pkgs, ... }:
 
 {
-	boot.kernelPackages = pkgs.linuxPackages_5_15;
+	boot.kernelPackages = pkgs.linuxPackages_5_15; # choices: 4_14 5_10 5_15 5_18 5_19
 
 	services.xserver.videoDrivers = [ "nvidia" ];
 
-	# For nvidia
-	# not for 21.05
 	nixpkgs.config.allowUnfree = true;
 	nixpkgs.config.nvidia.acceptLicense = true;
 
-	hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_390;
+	hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.generic {
+		version = "390.157";
+	};
 
-	# not for 21.05
 	hardware.nvidia.prime = {
 		sync.enable = true;
 
