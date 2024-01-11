@@ -161,6 +161,8 @@ in
 			flask_sqlalchemy
 			sqlalchemy
 			flask
+			websocket-client
+			paramiko
 			requests
 		]))
 		jetbrains.idea-ultimate maven spring-boot
@@ -176,7 +178,7 @@ in
 		gimp
 		ffmpeg
 		wine
-                anki-bin
+		anki-bin
 		# mystream
 		youtube-dl yt-dlp
 		# Network CLI
@@ -203,6 +205,17 @@ in
 			'';
 	};
 
+	services.mysql = {
+		enable = true;
+		package = pkgs.mariadb;
+		configFile = pkgs.writeText "my.cnf" ''
+[mysqld]
+datadir = /home/mounty/NGV/.maria
+bind-address = 127.0.0.1
+port = 3336
+		'';
+	};
+
 	services.logind.extraConfig = ''
 		HandlePowerKey = poweroff;
 	'';
@@ -227,6 +240,11 @@ in
 	# };
 	programs.command-not-found.enable = true;
 
+	programs.ssh = {
+		pubkeyAcceptedKeyTypes = [ "ecdsa-sha2-nistp256" "ecdsa-sha2-nistp384" "ecdsa-sha2-nistp521" "sk-ssh-ed25519@openssh.com" "sk-ecdsa-sha2-nistp256@openssh.com" "rsa-sha2-512,rsa-sha2-256" "ssh-ed25519" "ssh-rsa" "ssh-dss" ];
+		hostKeyAlgorithms = [ "ecdsa-sha2-nistp256" "ecdsa-sha2-nistp384" "ecdsa-sha2-nistp521" "sk-ssh-ed25519@openssh.com" "sk-ecdsa-sha2-nistp256@openssh.com" "rsa-sha2-512,rsa-sha2-256" "ssh-ed25519" "ssh-rsa" "ssh-dss" ];
+	};
+
 	# Enable the OpenSSH daemon.
 	services.openssh = {
 		enable = true;
@@ -242,10 +260,8 @@ in
 
 	# Enables deployment of Kitten to Azure with private net and DNS
 	networking.extraHosts = ''
-10.245.0.5	rabbitv2-staging.azurewebsites.net
-10.245.0.5	rabbitv2-staging.scm.azurewebsites.net
-10.245.0.4	rabbitv2.azurewebsites.net
-10.245.0.4	rabbitv2.scm.azurewebsites.net
+10.245.0.7	ngv-kitten.azurewebsites.net
+10.245.0.7	ngv-kitten.scm.azurewebsites.net
 	'';
 
 	# This value determines the NixOS release from which the default
