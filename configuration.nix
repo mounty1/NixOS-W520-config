@@ -4,6 +4,15 @@
 
 { config, pkgs, ... }:
 
+let
+	nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
+		export __NV_PRIME_RENDER_OFFLOAD=1
+		export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+		export __GLX_VENDOR_LIBRARY_NAME=nvidia
+		export __VK_LAYER_NV_optimus=NVIDIA_only
+		exec "$@"
+	'';
+in
 {
 	imports = [
 		./hardware-configuration.nix
@@ -52,7 +61,6 @@
 	#	keyMap = "us";
 	# };
 
-	
 	fileSystems."/mnt/az-storage" =
 		{ device = "//ngv.file.core.windows.net/office";
 			fsType = "cifs";
@@ -90,6 +98,7 @@
 
 	# Enable sound.
 	sound.enable = true;
+	hardware.opengl.enable = true;
 	hardware.pulseaudio.enable = true;
 	nixpkgs.config.allowUnfree = true;
 
@@ -123,7 +132,7 @@
 	# $ nix search wget
 	environment.systemPackages = with pkgs; [
 		# hardware and firmware
-		pciutils usbutils
+		pciutils usbutils nvidia-offload
 		glmark2
 		efibootmgr
 		# Desktop
