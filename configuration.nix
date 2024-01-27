@@ -60,7 +60,7 @@
 
 	fileSystems."/home/mounty/vault" =
 		{ device = "/dev/disk/by-label/Vault";
-			options = [ "noauto" "user" "rw" ];
+			options = [ "user" "rw" ];
 		};
 
 	fileSystems."/mnt/mymedia" =
