@@ -24,7 +24,7 @@
 		enable = true;
 		plugins = [ pkgs.networkmanager-openvpn ];
 	};
-	networking.hostName = "ida"; # Define your hostname.
+	networking.hostName = "pingala"; # Define your hostname.
 
 	# Set your time zone.
 	time.timeZone = "Australia/Brisbane";
@@ -55,7 +55,7 @@
 	fileSystems."/mnt/az-storage" =
 		{ device = "//ngv.file.core.windows.net/office";
 			fsType = "cifs";
-			options = ["nofail" "noauto" "vers=3.0" "credentials=/root/az-storage.cred" "dir_mode=0777" "file_mode=0777" "serverino"];
+			options = ["nofail" "vers=3.0" "credentials=/home/mounty/NGV/az-storage.cred" "dir_mode=0777" "file_mode=0777" "serverino"];
 		};
 
 	fileSystems."/home/mounty/vault" =
@@ -66,7 +66,7 @@
 	fileSystems."/mnt/mymedia" =
 		{ device = "172.16.47.8:/Media";
 			fsType = "nfs";
-			options = [ "nfsvers=3" "ro" "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
+			options = [ "nfsvers=3" "ro" "x-systemd.automount" "nofail" "x-systemd.idle-timeout=600" ];
 		};
 
 	services.xserver = {
@@ -146,10 +146,10 @@
 		tcpdump
 		jq
 		# Programming CLI
-		gcc11 rustc cargo nodejs jdk openjdk kotlin php82
+		gcc13 rustc cargo nodejs jdk openjdk kotlin php82
 		git vim gh mercurial vim_configurable
 		# python python3Full
-		(python310.withPackages(ps: with ps; [
+		(python311.withPackages(ps: with ps; [
 			pip
 			setuptools
 			psycopg2
@@ -171,6 +171,7 @@
 		gimp
 		ffmpeg
 		wine
+		anki-bin
 		# mystream
 		youtube-dl yt-dlp
 		# Network CLI
@@ -233,10 +234,13 @@
 
 	# Enables deployment of Kitten to Azure with private net and DNS
 	networking.extraHosts = ''
-10.245.0.5	rabbitv2-staging.azurewebsites.net
-10.245.0.5	rabbitv2-staging.scm.azurewebsites.net
-10.245.0.4	rabbitv2.azurewebsites.net
-10.245.0.4	rabbitv2.scm.azurewebsites.net
+10.245.0.5	ngv-rabbit.azurewebsites.net
+10.245.0.5	ngv-rabbit.scm.azurewebsites.net
+10.245.0.7	ngv-kitten.azurewebsites.net
+10.245.0.7	ngv-kitten.scm.azurewebsites.net
+10.245.0.10	radius.mysql.database.azure.com
+10.245.0.11	wifi-hotspot-admin.azurewebsites.net
+10.245.0.11	wifi-hotspot-admin.scm.azurewebsites.net
 	'';
 
 	# This value determines the NixOS release from which the default
