@@ -147,6 +147,7 @@
 		jq
 		# Programming CLI
 		gcc13 rustc cargo nodejs jdk openjdk kotlin php82
+		jujutsu
 		git vim gh mercurial vim_configurable
 		# python python3Full
 		(python311.withPackages(ps: with ps; [
@@ -157,6 +158,7 @@
 			sqlalchemy
 			flask
 			requests
+			paramiko
 		]))
 		jetbrains.idea-ultimate maven spring-boot
 		awscli azure-cli stripe-cli
